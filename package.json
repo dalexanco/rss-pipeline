@@ -1,0 +1,17 @@
+{
+  "name": "rss-pipeline",
+  "version": "1.0.0",
+  "description": "RSS Static Pipeline — Bun + RSSHub + GitHub Pages",
+  "scripts": {
+    "dev": "docker compose up -d && bun run src/index.ts",
+    "generate": "bun run src/index.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,77 @@
+name: Generate & Deploy RSS Feeds
+
+on:
+  schedule:
+    - cron: '0 * * * *'      # Every hour
+  workflow_dispatch:           # Manual trigger
+  push:
+    branches: [main]
+    paths:
+      - 'config/**'
+      - 'src/**'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+
+    services:
+      rsshub:
+        image: diygod/rsshub:latest
+        ports:
+          - 1200:1200
+        options: >-
+          --health-cmd "curl -sf http://localhost:1200/"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+          --health-start-period 20s
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Wait for RSSHub
+        run: |
+          echo "Waiting for RSSHub…"
+          for i in $(seq 1 20); do
+            curl -sf http://localhost:1200/ && break
+            sleep 3
+          done
+
+      - name: Generate feeds
+        env:
+          RSSHUB_URL: http://localhost:1200
+        run: bun run src/index.ts
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
