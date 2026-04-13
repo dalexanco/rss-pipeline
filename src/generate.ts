@@ -9,14 +9,6 @@ function esc(str: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function faviconUrl(siteUrl: string): string {
-  try {
-    const domain = new URL(siteUrl).hostname;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-  } catch {
-    return "";
-  }
-}
 
 function renderItem(item: FeedItem): string {
   const content = item.contentHtml
@@ -53,7 +45,8 @@ export function generateFeed(
   items: FeedItem[],
   output: FeedOutput,
   feedUrl: string,
-  imageUrl?: string,
+  faviconUrl?: string,
+  siteUrl?: string,
 ): string {
   const filtered = output.filter
     ? items.filter((i) => output.filter!.includes(i.category ?? ""))
@@ -63,11 +56,17 @@ export function generateFeed(
     .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
     .slice(0, output.maxItems ?? 100);
 
-  const imageBlock = imageUrl
+  // webfeeds:icon — supported by Feedly, Reeder, NetNewsWire, etc.
+  const webfeedsIcon = faviconUrl
+    ? `<webfeeds:icon>${faviconUrl}</webfeeds:icon>`
+    : "";
+
+  // RSS 2.0 <image> block — fallback for older readers
+  const imageBlock = faviconUrl
     ? `<image>
-      <url>${imageUrl}</url>
+      <url>${faviconUrl}</url>
       <title>${esc(output.title)}</title>
-      <link>${feedUrl}</link>
+      <link>${siteUrl ?? feedUrl}</link>
     </image>`
     : "";
 
@@ -76,15 +75,17 @@ export function generateFeed(
   xmlns:atom="http://www.w3.org/2005/Atom"
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
-  xmlns:media="http://search.yahoo.com/mrss/">
+  xmlns:media="http://search.yahoo.com/mrss/"
+  xmlns:webfeeds="http://webfeeds.org/rss/1.0">
   <channel>
     <title>${esc(output.title)}</title>
-    <link>${feedUrl}</link>
+    <link>${siteUrl ?? feedUrl}</link>
     <description>${esc(output.description)}</description>
     <language>fr</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml"/>
     <generator>rss-pipeline/bun</generator>
+    ${webfeedsIcon}
     ${imageBlock}
 ${sorted.map(renderItem).join("\n")}
   </channel>
@@ -103,5 +104,5 @@ export function generateSourceFeed(
     description: `Feed RSS — ${source.label}`,
     maxItems: source.maxItems ?? 50,
   };
-  return generateFeed(items, output, feedUrl, faviconUrl(source.siteUrl));
+  return generateFeed(items, output, feedUrl, source.faviconUrl, source.siteUrl);
 }

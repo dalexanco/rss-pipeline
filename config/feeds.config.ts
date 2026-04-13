@@ -4,7 +4,8 @@ export interface FeedSource {
   route?: string;         // RSSHub route, e.g. "/hackernews/best"
   directUrl?: string;     // Direct RSS/Atom URL
   category?: string;      // Tag for aggregated feeds
-  siteUrl: string;        // Homepage URL (used for favicon)
+  siteUrl: string;        // Homepage URL
+  faviconUrl: string;     // Direct favicon URL (for webfeeds:icon)
   maxItems?: number;      // Per-source limit (default: 50)
 }
 
@@ -37,6 +38,7 @@ const config: Config = {
       route: "/hackernews/best",
       category: "tech",
       siteUrl: "https://news.ycombinator.com",
+      faviconUrl: "https://news.ycombinator.com/favicon.ico",
       maxItems: 30,
     },
     {
@@ -45,6 +47,7 @@ const config: Config = {
       route: "/github/trending/daily/javascript",
       category: "tech",
       siteUrl: "https://github.com",
+      faviconUrl: "https://github.com/favicon.ico",
       maxItems: 20,
     },
     {
@@ -53,6 +56,7 @@ const config: Config = {
       directUrl: "https://stripe.com/blog/feed.rss",
       category: "tech",
       siteUrl: "https://stripe.com",
+      faviconUrl: "https://stripe.com/favicon.ico",
       maxItems: 20,
     },
     {
@@ -61,6 +65,7 @@ const config: Config = {
       directUrl: "https://engineering.atspotify.com/feed/",
       category: "tech",
       siteUrl: "https://engineering.atspotify.com",
+      faviconUrl: "https://engineering.atspotify.com/favicon.ico",
       maxItems: 20,
     },
 
@@ -71,6 +76,7 @@ const config: Config = {
       route: "/csstricks",
       category: "design",
       siteUrl: "https://css-tricks.com",
+      faviconUrl: "https://css-tricks.com/favicon.ico",
       maxItems: 20,
     },
     {
@@ -79,6 +85,7 @@ const config: Config = {
       route: "/smashingmagazine",
       category: "design",
       siteUrl: "https://www.smashingmagazine.com",
+      faviconUrl: "https://www.smashingmagazine.com/favicon.ico",
       maxItems: 20,
     },
   ],
