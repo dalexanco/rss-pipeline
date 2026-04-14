@@ -7,6 +7,7 @@ export interface FeedSource {
   siteUrl: string;        // Homepage URL
   faviconUrl: string;     // Direct favicon URL (for webfeeds:icon)
   maxItems?: number;      // Per-source limit (default: 50)
+  scraper?: string;       // Custom scraper identifier (e.g. "anthropic")
 }
 
 export interface FeedOutput {
@@ -67,6 +68,16 @@ const config: Config = {
       siteUrl: "https://engineering.atspotify.com",
       faviconUrl: "https://engineering.atspotify.com/favicon.ico",
       maxItems: 20,
+    },
+
+    {
+      label: "Anthropic Blog",
+      slug: "anthropic",
+      scraper: "anthropic",
+      category: "tech",
+      siteUrl: "https://www.anthropic.com/news",
+      faviconUrl: "https://www.anthropic.com/favicon.ico",
+      maxItems: 15,
     },
 
     // ── Design / Frontend ─────────────────────────────────────────────────────

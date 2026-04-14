@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import type { FeedSource } from "../config/feeds.config";
 import type { FeedItem } from "./types";
+import { scrapeAnthropic } from "./scrapers/anthropic";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -92,6 +93,18 @@ export async function fetchSource(
   baseUrl: string,
   source: FeedSource
 ): Promise<FeedItem[]> {
+  // Custom scrapers for sites without native RSS
+  if (source.scraper === "anthropic") {
+    try {
+      const items = await scrapeAnthropic(source);
+      console.log(`  ✓ ${source.label} — ${items.length} items (scraper)`);
+      return items;
+    } catch (err) {
+      console.error(`  ✗ ${source.label} — ${err}`);
+      return [];
+    }
+  }
+
   const url = source.directUrl ?? `${baseUrl}${source.route}`;
 
   try {
