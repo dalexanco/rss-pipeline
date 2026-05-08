@@ -9,6 +9,7 @@ const parser = new XMLParser({
   cdataPropName: "__cdata",
   parseTagValue: true,
   trimValues: true,
+  processEntities: false,  // avoid entity expansion limit on rich HTML feeds (e.g. Vercel)
 });
 
 function stripHtml(html: string): string {
