@@ -71,6 +71,16 @@ const config: Config = {
     },
 
     {
+      label: "Vercel",
+      slug: "vercel",
+      directUrl: "https://vercel.com/atom",
+      category: "tech",
+      siteUrl: "https://vercel.com",
+      faviconUrl: "https://vercel.com/favicon.ico",
+      maxItems: 20,
+    },
+
+    {
       label: "Anthropic Blog",
       slug: "anthropic",
       scraper: "anthropic",
