@@ -2,6 +2,7 @@ import { XMLParser } from "fast-xml-parser";
 import type { FeedSource } from "../config/feeds.config";
 import type { FeedItem } from "./types";
 import { scrapeAnthropic } from "./scrapers/anthropic";
+import { scrapeGithubTrending } from "./scrapers/github-trending";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -10,6 +11,7 @@ const parser = new XMLParser({
   parseTagValue: true,
   trimValues: true,
   processEntities: false,  // avoid entity expansion limit on rich HTML feeds (e.g. Vercel)
+  stopNodes: ["*.content", "*.summary"],  // preserve xhtml content as raw string (Atom type="xhtml")
 });
 
 function stripHtml(html: string): string {
@@ -98,6 +100,17 @@ export async function fetchSource(
   if (source.scraper === "anthropic") {
     try {
       const items = await scrapeAnthropic(source);
+      console.log(`  ✓ ${source.label} — ${items.length} items (scraper)`);
+      return items;
+    } catch (err) {
+      console.error(`  ✗ ${source.label} — ${err}`);
+      return [];
+    }
+  }
+
+  if (source.scraper === "github-trending") {
+    try {
+      const items = await scrapeGithubTrending(source);
       console.log(`  ✓ ${source.label} — ${items.length} items (scraper)`);
       return items;
     } catch (err) {

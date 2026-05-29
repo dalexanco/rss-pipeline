@@ -36,7 +36,7 @@ const config: Config = {
     {
       label: "Hacker News",
       slug: "hackernews",
-      route: "/hackernews/best",
+      directUrl: "https://hnrss.org/best",
       category: "tech",
       siteUrl: "https://news.ycombinator.com",
       faviconUrl: "https://news.ycombinator.com/favicon.ico",
@@ -45,9 +45,9 @@ const config: Config = {
     {
       label: "GitHub Trending JS",
       slug: "github-trending-js",
-      route: "/github/trending/daily/javascript",
+      scraper: "github-trending",
       category: "tech",
-      siteUrl: "https://github.com",
+      siteUrl: "https://github.com/trending/javascript",
       faviconUrl: "https://github.com/favicon.ico",
       maxItems: 20,
     },
@@ -94,7 +94,7 @@ const config: Config = {
     {
       label: "CSS Tricks",
       slug: "css-tricks",
-      route: "/csstricks",
+      directUrl: "https://css-tricks.com/feed/",
       category: "design",
       siteUrl: "https://css-tricks.com",
       faviconUrl: "https://css-tricks.com/favicon.ico",
@@ -103,7 +103,7 @@ const config: Config = {
     {
       label: "Smashing Magazine",
       slug: "smashing-magazine",
-      route: "/smashingmagazine",
+      directUrl: "https://www.smashingmagazine.com/feed/",
       category: "design",
       siteUrl: "https://www.smashingmagazine.com",
       faviconUrl: "https://www.smashingmagazine.com/favicon.ico",
